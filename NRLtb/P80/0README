@@ -1,0 +1,21 @@
+This directory contains the subroutines for the tight-binding
+"STATIC" program.  The online manual for this program is located
+at http://cst-www.nrl.navy.mil/bind/static.  See
+http://cst-www.nrl.navy.mil/bind for parameters.
+
+See the file "REVISION_HISTORY" for information about changes in
+this program since the previous release.
+
+The file ALLSOURCE.tar.gz contains all of the source and parameter
+(P1,P2,P3) files in this directory.
+
+This software and any accompanying documentation are released "as
+is." The U.S. Government makes no warranty of any kind, expressed or
+implied, concerning this software and any accompanying
+documentation, including without limitation, any warranties of
+merchantability or fitness for a particular purpose. In no event
+will the U.S. Government be liable for any damages, including any
+lost profits, lost savings, or other incidental or consequential
+damages arising out of the use, or inability of use, of this
+software or any accompanying documentation, even if informed in
+advance of the possibility of such damages.

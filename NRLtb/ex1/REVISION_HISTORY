@@ -1,0 +1,413 @@
+static.105:
+
+There have been some modifications from version 1.00, the
+official Alpha release version.  In particular
+
+(1) Information that should logically be included in
+    the parameter files, including cutoffs, basis set
+    sizes, and form of the overlap parameters are
+    included in the header of the parameter file.  Thus
+    the form of the SKIN file has been simplified.
+
+(2) The parallel and scalar versions of the code have
+    been merged.  This was done by
+
+    (a) Installing dummy MPI routines to be used on
+        scalar machines, and
+
+    (b) Running a slightly different algorithm when
+        using only one processor.  The choice of
+        algorithm is made at runtime.  We didn't
+        used a compiler-flag option because we want
+        this program to run on as many machines
+        as possible, and preprocessors are notoriously
+        machine specific.
+
+				-- mjm  6 April 1998
+
+========================================================================
+
+static.106:
+
+(1)	Eliminated "displ" common block, which had hung on in search2.f,
+	even though it was superseded by the common block disply.
+
+(2)	Convert "jsover" to a logical variable.  Now:
+		jsover = .true.  -> Non-orthogonal calculation
+		jsover = .false. -> Orthogonal calculation
+
+(3)	"P2" parameter file created to handle the parameters which are
+	associated with the calculation of eigenvectors, and which are
+	only defined in static.f, bande.f, and diag.f
+
+(4)	There were some difficulties in using the Intel/Linux/Absoft Fortran
+	code for large unit cells.  In order to conserve the disk space
+	required by the executable we needed to eliminate the "-s" option
+	(static variables) from the compilation string.  When we did that,
+	however, the program bombed for large executable sizes unless we
+	"saved" certain arrays in bande.f and diag.f.  This probably has
+	something to do with the size of the stack.  To save the situation,
+	we modified Makefile.absoft to compile bande.f and diag.f with
+	the -s option, and all other subroutines without this option.
+	This seems to alleviate the problem  To save the situation,
+	we modified Makefile.absoft to compile bande.f and diag.f with
+	the -s option, and all other subroutines without this option.
+	This seems to alleviate the problem.
+
+				-- mjm  6 July 1998
+
+========================================================================
+
+static.110:
+
+(1) Included support for Gillan's T->0 extrapolation of Fermi
+    Temperature Broadening.  Reference M.J. Gillan,
+    J. Phys. Condes. Matter 1, 689-711 (1989).  Gillan assumes his
+    correction has a T**3 behavior.  However, Grotheer and Fahnle
+    (PRB 58, 13459-64 (1998)) argue convincingly that the correction
+    actually goes as T**4, and I have been able to show this is true
+    exactly if we don't have to worry about (a) self-consistency,
+    and (b) a nearby van Hove singularity (i.e., we can do a Taylor
+    expansion of the density of states in a region of order T around
+    the Fermi level).  See Phys. Rev. B 61, 1654-7 (2000) for more
+    details.
+
+    As part of this rewrite, the logical variable lpress, lqlmt,
+    lqapw, etc. have been eliminated.  We'll pass this information
+    into bande.f via the "mode" parameter.
+
+    Also, we eliminated the common block /fermcom/.  Now the Fermi
+    level, energy and pressure are passed through the call to
+    bande.f.  The variables for energy and pressure have been
+    renamed in bande.f, as at times they may be (extrapolated
+    energy, energy) or (extrapolated energy, extrapolate pressure).
+
+Note:  (2) here has been held in abeyance, awaiting a decision on
+whether or not this form is necessary.
+
+(2) Added a new form for the on-site interactions, 00002 and 00003.
+    On-site terms are now expressed as pair-like sums.  Thus
+
+    h_s(i) = e_s(i) + Sum_neighbors (a^2/R + b + c R + d R^2) exp(-e^2 R)
+
+    where R is the distance between atom i and the current neighbor
+    and a,b,c,d,e can be parametrized by interaction type, allowing
+    a better description of the neighborhood by atom type.  Note that
+    these on-site terms form effective angular-momentum dependent pair
+    potentials.  This is most easily seen in the orthogonal case.
+
+    Version 00002 uses the old style overlap parameters (same as 00000)
+    and version 00003 uses the new style overlap parameters (same as
+    00001).
+
+                                           -- mjm  26 Jan 1999
+
+(3) Mode 5 is now on.  It is identical to mode 6 except that the
+    QLMT dump is unformatted, to save space and to increase the
+    accuracy of the k-point and eigenvalue listings.
+
+                                           -- mjm  11 Feb 1999
+
+(4) Revised the "phonon" mode in input1.f.  Now we can shift
+    any individual atom away from its input position, using either
+    Cartesian or lattice coordinates.  This is useful if we want to
+    move only a few atoms away from equilibrium.
+
+                                           -- mjm   3 Mar 1999
+
+========================================================================
+
+static.111:
+
+(1) Break up setup.f into its logical pieces:
+
+    (a) setpar.f, which sets the on-site parameters for each atom and
+        the Slater-Koster and optional overlap matrix elements for
+        each pair; and
+
+    (b) setham.f, which takes the output of setpar.f and the k-point
+        information and then, along with rotate.f, constructs the
+        Hamiltonian and optional overlap matrix (S) at each k-point.
+
+    Note that search2.f/setpar.f are possible candidates for parallelization,
+    independent of the parallelization that takes place in the k-point
+    loop.
+
+                                           -- mjm  30 Apr 1999
+
+(2) Changed the "QLMT" printing process in diag.f so that we can have 
+    atoms with basis smaller than MBAS and still get the proper
+    angular momentum decomposition into s, p, and d orbitals.
+                                           -- mjm  23 Jul 1999
+
+(3) Break setvol.f into its logical pieces, setparv.f and sethamv.f,
+    which are the analogs of setpar.f and setham.f.  Since I rewrote
+    setparv.f and sethamv.f using "implicit none," modify the
+    parameter files P[1-3] to explicitly declare all parameters
+    integers.
+                                           -- mjm  27 Jul 1999
+
+(4) For some reason input1.f had a P3 dependency.  This isn't necessary,
+    so it was removed from input1.f and the makefile.
+                                           -- mjm  27 Jul 1999
+
+(5) In "Magnetic" mode (jspins=2), modify bande.f to calculate the
+    spin up and spin down populations, and so, by extension, the
+    magnetization of the system.  This is printed in SKOUT.
+                                           -- mjm  30 Jul 1999
+
+(6) Added changes to the diagnostic printing capabilities in the
+    bande.f/diag.f/set*.f package so that it will no longer create
+    "fort15" files in multi-processor mode.  All printing is now
+    done only on the master processor.     -- mjm   4 Aug 1999
+
+(7) Added a disclaimer to the LAPACK/BLAS compilation in lapack.f,
+    telling users that this is not an NRL package and providing
+    contact/reference information for these codes.
+                                           -- mjm   5 Aug 1999
+
+(8) Corrected an error in the "package" option of makefile.absoft,
+    where the file mpifake.f was linked to itself in ALLSOURCE.tar,
+    producing an unreadable subroutine.  This did not affect the
+    other versions of the makefile.        -- mjm  14 Oct 1999
+
+========================================================================
+
+static.120:
+
+(1) If the tight-binding parameters are magnetic (see input.f), then
+    allow for "spin flips."  That is, and the input for the atomic
+    positions is scanned to see if this particular atom is pointing
+    "up" or "down."  By default, the on-site part of spin 1 is
+    associated with up, and spin 2's on-sites are associated with
+    spin down.  If an atom is pointed "up", or if "spinflip" is set
+    to .false., then the default situation holds.  If, however, an
+    atom is supposed to be "flipped," then the flipped atom uses the
+    spin 2 on-sites for "up" and spin 1 for "down."  In this way we
+    can generate an anti-ferromagnetic system.  See "input1.f" for a
+    the changes in the SKIN file input.
+
+(2) To facilitate this, and future non-collinear magnetization work,
+    move the variable "jspins" out of the common block /lia/ and
+    communicate its value through calling statements.  The means we
+    have to change static.f, input.f, kptin.f, and input1.f.  Note
+    that the change to kptin.f just means we entirely eliminate the
+    reference to jspins from this subroutine.
+
+(3) Change (1) so that the density for the first set of on-sites
+    uses the density parameter from the first set of on-site
+    energies for all of the atoms, even the flipped ones.  Hopefully
+    this will make for better energetics in the anti-ferromagnetic
+    case.                                    ( 12 Jan 00)
+
+(4) Add support for "anti-ferromagnetic" spin-polarized materials in
+    a non-self-consistent way.  That is, we can specify if a given
+    atom is "spin up" or "spin down" BEFORE the start of a
+    calculation, but it is not allowed to change during the course
+    of a calculation.  Tight-binding spin dynamics must wait for a
+    while.
+
+							Mike Mehl
+							20 Dec 1999
+
+(5) Let A-A, B-B, C-C, etc. interactions have Harrison's canonical
+    sign.  i.e.:
+
+			H	S
+
+	ss sigma	-	+
+	sp sigma	+	-
+	pp sigma	+	-
+	pp pi		-	+
+	sd sigma	-	+
+	pd sigma	-	+
+	pd pi		+	-
+	dd sigma	-	+
+	dd pi		+	-
+	dd delta	Arbitrary (Harrison has zero)
+
+							Mike Mehl
+							7 March 2000
+
+========================================================================
+
+static.121:
+
+A minor update to 1.20, before we add the non-collinear spins in 1.30:
+
+When running static, if a file named TWEAKS exists in the same directory
+as SKIN, then this file is examined for certain keywords, as outlined in
+the subroutine tweaks.f.  These keywords set certain output options, such
+as 
+
+(1) printing out values of the on-site, hopping, and overlap matrix elements;
+
+(2) printing out the Hamiltonian and Overlap matrices at certain k-points.
+
+                                                   -- mjm  7 August 2000
+========================================================================
+
+static.122:
+
+While working on version 1.30, I realized that I was going to have
+to schlep a bunch of eigenvalues and various eigenvalue derivatives
+from the current processor back to the master processor.  I then
+realized that this wasn't necessary.  Thus we come back to this
+version, which will be folded into version 1.31.
+
+(1) Fixed a non-so-minor bug in static.f involving the TWEAKS file.
+    The old version would not run in multiprocessor mode.  This was
+    actually fixed in 1.30, and back filled to this retro version.
+
+(2) Since MPI looks to be here to stay, all of those "cMPI/cend MPI"
+    comments have been removed.  Exception:  There are some lines
+    labeled "c MPI notes/c end MPI notes", if I thought there was
+    something important that applied only to the MPI version.
+    Otherwise, things that were now set off by the "cMPI" construct
+    are now properly indented.
+
+(3) When calculating perturbations on the eigenvalues, either for
+    pressure or when calculating torques in 1.3+ (or forces, in
+    1.?), derivatives of the eigenvalues have to be stored.  In
+    older versions of the code these, and the eigenvalues, were then
+    transferred to the master processor in order to find the 
+    Fermi level, the total energy, and whatever derivatives we
+    wanted.  While these calculations were taking place the other
+    processors were idle.  While this isn't bad for small jobs, it
+    is a major drawback for large systems.  Thus here we rewrite
+    bande.f and fermi.f to keep eigenvalues and derivatives on the
+    originating processors and to only transfer the minimum data
+    necessary back to the original processor.
+                                                  -- mjm 19 October 2000
+========================================================================
+
+static.130:
+
+Add non-collinear magnetization to static, using the procedure
+described by Pickett (1996).
+
+
+Includes:
+
+(1) Total energy for arbitrary spin directions.
+
+(2) Pressure for arbitrary spin directions. (optional)
+
+(3) spin and angular momentum decomposition of the eigenstates of
+    the non-collinear system in the QLMT file (mode 5 or
+    6). (optional)
+
+(4) Torque (actually the derivative of the energy with respect to
+    angle) on each atom. (optional)
+
+    Note that this only works properly if we use a space group where
+    each atom is different from its neighbors.  In general this will
+    mean a large increase in the number of k-points.
+
+                                                -- mjm  8-14 August 2000
+
+========================================================================
+
+static.131:
+
+Version 1.30 was derived from version 1.21.  Here we merge the
+changes 1.21 -> 1.30 onto the revised version 1.22.
+
+                                                 -- mjm  23 October 2000
+------------------------------------------------------------------------
+
+We specify the direction of the spin of each atom in the input.  But
+this does not guarantee that we know the direction of each spin in
+the output.  Here we turn on an option to determine the "output
+spin direction" of each atom.  Note that at self-consistency the
+input and output spin directions should be aligned, so this is one
+way of determining the directions of spins at a domain wall, or in
+a frustrated anti-ferromagnet.
+
+See input1.f for directions on how to turn on this calculation.
+
+                                                 -- mjm  26 October 2000
+------------------------------------------------------------------------
+Updated "tweaks" to provide more information on how the program
+is progressing through the k-point list.
+                                                 -- mjm  28 August  2001
+========================================================================
+
+static.132:
+
+Merge g77 (with spin directions) and Absoft (with tweaks) versions of 1.31
+
+Add a new mode (10) which prints out orbital-by-orbital
+decomposition of the wave function in the QLMT file.
+
+NOTE**NOTE**NOTE**NOTE**NOTE**NOTE**NOTE**NOTE**NOTE**NOTE**NOTE
+
+This necessitates a small change in the format of the line in static
+which reads the mode.  Previously it was:
+
+         read(10,10) mode
+ 10      format(5x,i1)
+
+We change it to
+
+	 read(10,'(5x,i)') mode
+
+In Absoft and g77, this returns "mode=10" as 10, "mode= 1" or
+"mode=1" as 1, etc.  This may vary in other compilers.
+
+                                                 -- mjm  1 November 2001
+
+Added the tweak "PRINT_DIMENSIONS" which prints all of the
+dimensions parameters it finds in the include files.  Note
+that this does not require any further communication to the
+outside world, so there is no "lp_dim" variable set.
+                                                     -- mjm  30 Apr 2002
+
+Add /fazon/ common block, to make sure that the nearly
+ready for depreciation variables posq are propogated to
+all nodes
+
+                                                     -- mjm  13 May 2002
+========================================================================
+
+static.133:
+
+Correctly parse the "Mode=" on the first line of the SKIN file.
+This is accomplished via a new "modeparse" subroutine, and fixes
+problems caused by the (5x,i) format above.
+
+                                                     -- mjm  14 Aug 2002
+
+Change bande and its associated files to only allocate eigenvalue
+arrays for the number of k-points which will be used on one
+processor, rather than dimensioning for all k-points on each
+processor.  Note that this will require recompiling the code
+whenever we DECREASE the number of processors in the calculation.
+The relevant parameter is "minproc", which is dimensioned in P3.
+Note that static.f will check to see if minproc is consistent with
+the number of processors in the code, and abort if the dimension
+needs to be fixed.
+
+This involves a minor change in the static.f routine, major changes in
+bande.f, and a change in the calling sequence in fermi.f.
+
+                                                     -- mjm  15 Aug 2002
+
+When lpress is true, if setparv fails it puts its error code into
+the variable iespv.  bande detects this, sets its own error code,
+and returns.  The check for non-zero iepsv was done whether or not
+lpress was true or not.  This can cause problems for compilers which
+actually leave uninitialized variables uninitialized.  We now only
+check iespv if setparv was actually called.
+
+                                                     -- mjm  21 Aug 2002
+
+Split the DLAMCH and DLAMC[1-5] routines out of the lapack.f
+subroutine, so that they can be compiled WITHOUT optimization.
+This helps the ifc compiler produce correct code, but in general
+it is a Good Thing.  See the file dlamch.f for details.  This
+involves changes to all the makefiles that use our copy of lapack.f,
+but does not affect anyone using a precompiled BLAS/LAPACK library.
+
+                                                     -- mjm  22 Aug 2002
+========================================================================

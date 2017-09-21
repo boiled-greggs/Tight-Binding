@@ -1,0 +1,80 @@
+c comdeck P2
+c
+c     These are the parameters which set up arrays for the calculation
+c      of eigenvectors.  Note that eigenvectors are not needed for all
+c      calculations, in which case you should set
+c      meigen = mtorque = mpress = 0.
+c
+c=======================================================================
+c
+c     If you are going to do a pressure calculation, set mpress = 1.
+c      Otherwise, you can set mpress = 0 to make the size of the
+c      eigenvector matrix in bande small.  This will be useful only
+c      for large atom calculations.  The program should catch any
+c      inconsistencies (e.g., asking for pressure but setting
+c      mpress = 0)
+c
+      integer mpress
+      parameter (mpress = 0)
+c
+c     When doing calculations using non-collinear magnetization it is
+c     often useful to know the torque on each spin.  If you are doing
+c     calculations of the torque you will need to set mtorque = 1 on the
+c     line below.  Note that the code will check any inconsistencies.
+c
+      integer mtorque
+      parameter (mtorque = 0)
+c
+c-----------------------------------------------------------------------
+c
+c     Alternatively, you might want to know the magnitude and direction
+c      of the output spin on each atom.  If so, set msdir = 1 below.
+c      Again, this is a non-collinear calculation, so you must have
+c      mcol = 2 in P1.
+c
+      integer msdir
+      parameter (msdir = 0)
+c
+c-----------------------------------------------------------------------
+c
+c     Certain calculations, particularly the charge-density decompostion
+c      calculations for QLMT runs, require knowledge of the individual
+c      eigenstates.  Set meigen = 1 if you need this, meigen = 0 if you
+c      don't.  The program should refuse to run if meigen is set wrong.
+c
+c     Note that pressure calculations need the eigenstates, hence both
+c      meigen and mpress must be 1 if you want the pressure.
+c
+c     Also note that the torque calculations need the eigenvalues, so
+c      meigen must be 1 if mtorque = 1.
+c
+      integer meigen
+      parameter (meigen = 1)
+c
+c=======================================================================
+c
+c     Though you may want to change some of the parameters below
+c      the recommended values are good ones for most problems.  Please
+c      do not change anything below this line unless you have a good
+c      reason.
+c
+c     Note that the parameters defined here assume the definition of
+c      other parameters in the P1 file.
+c
+c     Version 1.30 and above:  we need to double the number of
+c      basis functions when doing a non-collinear magnetization
+c      calculation.  This requires mcol=2 in P1.
+c
+c     mhe is the dimension of the eigenvectors for use in things like
+c      orbital decomposition of the eigenstates.  If not needed,
+c      (meigen = 0 above) we want to make this as small as possible.
+c      The following trick should do it, without making compilation
+c      difficult or machine dependent:
+c
+      integer mhe
+      parameter (mhe = mcol*(meigen*mbas*(matom-1) + mbas))
+c
+c     Similar calculation for pressure:
+c
+      integer mhp
+      parameter (mhp = mcol*(mpress*mbas*(matom-1) + mbas))

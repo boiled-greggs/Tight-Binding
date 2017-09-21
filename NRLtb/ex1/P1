@@ -1,0 +1,113 @@
+c comdeck P1
+c
+c     Many parameters are scale with the number of atoms, natom
+c     In the following we assume we need s, p, and d orbitals
+c      for every atom, and that there are 4 parameters for each
+c      onsite term
+c
+c-----------------------------------------------------------------------
+c
+c     version 1.11:
+c
+c     Modified to explicitly type all of these parameters as integer,
+c      in case some subroutines (e.g., setparv.f) use integer none
+c                                                    mjm -- 23 July 1999
+c-----------------------------------------------------------------------
+c
+c     version 1.30:
+c
+c     Includes a new variable, mcol, which redimensions the secular
+c      equation set size (mh) to handle non-collinear magnetization
+c      (mcol = 2) or only collinear magnetization (mcol = 1).
+c                                                  mjm -- 14 August 2000
+c=======================================================================
+c
+c     The parameters in this section determine the number of atom types,
+c      atoms, k-points, and basis functions.  These may be changed
+c      as needed to fit the problem.
+c
+c     Note that this version of the code eliminates the structure
+c      dimension
+c
+c     mkind is the maximum number of atom species in the parameter file
+c
+c     For now we'll assume the system is binary.  The input routine
+c      input.f is smart enough to figure out that the system is
+c      only monatomic.
+c
+      integer mkind
+      parameter (mkind=2)
+c
+c     matom is the maximum number of atoms in the system
+c
+      integer matom
+      parameter (matom= 20)
+c
+c     mbas is the basis set size per atom:  1 for s, 4 for sp, 9 for spd
+c       If you are doing atom types with differing basis sets use
+c       your best judgement on how to dimension this.
+c
+      integer mbas
+      parameter (mbas = 9)
+c
+c     mppair is a guess at the average number of pairs formed by
+c      each atom in the unit cell.  Remember that we've removed
+c      the double counting of pairs:
+c
+      integer mppair
+      parameter (mppair = 600)
+c
+c     mspin is the maximum number of spins.  Should be 1
+c      for paramagnetic calculations, or 2 if spin-polarized
+c      calculations are contemplated.  mspin=2 will eat up memory
+c      for non-polarized calculations, but shouldn't hurt anything.
+c      If the parameter file is spin polarized, i.e., it starts
+c      "NM000xx" or "OM000xx", then you must have mspin = 2.
+c
+      integer mspin
+      parameter (mspin = 2)
+c
+c     Set mcol = 1 if you are NOT going to be doing non-collinear spin
+c      calculations.  Set mcol = 2 if you ARE going to do non-collinear
+c      spin calculations.  Note that this doubles the basis set size,
+c      see the variable "mh" defined below.
+c
+      integer mcol
+      parameter (mcol = 2)
+c
+c=======================================================================
+c
+c     Though you may want to change some of the parameters below
+c      the recommended values are good ones for most problems.  Please
+c      do not change anything below this line unless you have a good
+c      reason.
+c
+c     (DO NOT CHANGE NPARD!)
+c
+c     Change to include the new cross-atom on-site terms:
+c
+      integer npard
+      parameter (npard = mkind*(29+68*mkind))
+c
+c     mint is the number of types of interaction.  I.e., if we mkind
+c      = 3, we have A-A, B-B, C-C, A-B, A-C, B-C type interactions
+c
+      integer mint
+      parameter (mint = mkind*(mkind+1)/2)
+c
+c     This is the dimension of the secular equation for this problem:
+c
+      integer mh
+      parameter (mh=mcol*mbas*matom)
+c
+c     mptype = 2 means monatomic systems,
+c     mptype = 3 means multi-atom-type systems (3 works for monatomic systems)
+c
+      integer mptype, mnn, mpkind
+      parameter (mptype=3,mnn=1,mpkind=14)
+c
+c     mpair scales with matom if the unit cell size
+c      is on the order or greater than the cutoff distance
+c
+      integer mpair
+      parameter (mpair=mppair*matom)

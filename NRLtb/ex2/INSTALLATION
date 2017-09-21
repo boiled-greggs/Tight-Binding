@@ -1,0 +1,160 @@
+The program static is written in Fortran 77 with rather simple
+MPI calls.  It therefore requires a Fortran 77 compiler.  If you
+are going to run this in parallel mode you also need to have
+MPI installed.  For single processor use you can use our mpifake.[fh]
+files to make the program think that it is using MPI.  See mpifake.f,
+mpifake.h, and the makefiles for more details.
+
+------------------------------------------------------------------------
+IMPORTANT:
+
+To reduce the size of the code in multiple processor runs, edit the
+line
+
+      parameter (minproc=1)
+
+to the minimum number of processors you plan to use.  Note that
+the program will stop if you try to use fewer than minproc processors.
+
+------------------------------------------------------------------------
+
+In serial mode static should run on any machine with a
+Fortran 77 compiler.  It is known to run on the following
+architectures:
+
+Intel 486 and above running Linux and the Absoft F77 compiler
+
+Intel 486 and above running Linux and using g77
+
+Dec Alpha or Compaq SC using the Dec Fortran compiler
+
+IBM SPx in serial, using xlf compiler
+
+SGI Origin 2000
+
+The code has NOT been shown to run using the GNU g77 Fortran
+compiler.  At least one version of this compiler does not compile
+the complex arithmetic sections of the LAPACK library correctly.
+
+------------------------------------------------------------------------
+
+In parallel mode the code is known to run on the:
+
+IBM SPx using the xlf compiler and MPI
+
+SGI Origin 2000 using MPI
+
+Dec Alpha or Compaq SC using the Dec Fortran compiler
+
+------------------------------------------------------------------------
+
+To compile this code, find the appropriate makefile from the
+list 'ls makefile.*' and copy it to makefile.  Edit the P1
+file appropriately and compile using the "make" command.
+You can either copy the appropriate makefile.* to "makefile",
+or use, e.g.
+			make -f makefile.sgi
+if you are running on an Silicon Graphics Origin.
+
+Here are the currently available makefiles and options:
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Linux serial machines:
+
+If you are going to use the ALTAS libraries
+(http://math-atlas.sourceforge.net/), edit the "NLIBS=" line in the
+makefile to point to the appropriate directory.
+
+Using the g77 compiler on a Linux machine:
+
+make -f makefile.g77
+
+with the ATLAS libraries:
+
+make -f makefile.g77 newblas
+
+Using the Absoft compiler on a Linux machine:
+
+make -f makefile.absoft
+
+with the ATLAS libraries:
+
+make -f makefile.absoft newblas
+
+Using the Intel compiler
+
+make -f makefile.intel
+
+This will produce an inordinate number of warnings, but the code
+will run.  Note that we have yet to figure out how link the ATLAS
+libraries with the Intel object files.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+On an IBM SP:
+
+In serial mode:
+
+make -f makefile.aix.single
+
+In parallel mode:
+
+make -f makefile.aix.parallel
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+On an SGI Origin 2000:
+
+Parallel Mode, SGI libraries for BLAS and LAPACK (recommended)
+
+make -f makefile.sgi
+
+Parallel Mode, lapack.f for BLAS and LAPACK
+
+make -f makefile.sgi parnlb
+
+Serial Mode, SGI libraries for BLAS and LAPACK
+
+make -f makefile.sgi scrlib
+
+Serial Mode, lapack.f for BLAS and LAPACK
+
+make -f makefile.sgi scrnlb
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+On an Compaq or DEC Alpha Origin 2000:
+
+Parallel Mode, Compaq libraries for BLAS and LAPACK (recommended)
+
+make -f makefile.alpha
+
+Parallel Mode, lapack.f for BLAS and LAPACK
+
+make -f makefile.alpha parnlb
+
+Serial Mode, Compaq libraries for BLAS and LAPACK
+
+make -f makefile.alpha scrlib
+
+Serial Mode, lapack.f for BLAS and LAPACK
+
+make -f makefile.alpha scrnlb
+
+------------------------------------------------------------------------
+
+If you are switching between machines, or from serial to parallel
+on the same machine, please do a
+
+	make -f makefile.absoft clean
+
+to make sure that none of the previous object files survive.  (You
+don't have to use the Absoft makefile, of course.)
+
+------------------------------------------------------------------------
+
+If you have any difficulties compiling this code, please
+contact me at mehl@dave.nrl.navy.mil .
+
+						--  mjm  19 Aug 2002

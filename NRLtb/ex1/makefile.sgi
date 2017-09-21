@@ -1,0 +1,129 @@
+SHELL=/bin/sh
+#
+#
+#  This is the makefile for the SCALABLE version of static, the
+#  tight-binding total energy and electronic structure evaluation
+#  program.  The code is written using Fortran 77 and MPI.  The
+#  options set here assume that the code is going to run on an
+#  SGI Origin 2K and linking to the MPI libraries.
+#
+#  Note that you have options for constructing scalar or parallel
+#  executables, and you may choose to use the SGI BLAS and LAPACK
+#  libraries (recommended), or our provided lapack.f routine.
+#
+#  For parallel runs, set minproc in file P3 to the minimum number
+#  of processors you plan to use.  If the number of processors is
+#  less than the minproc, the code will not run.  On the other hand,
+#  choosing a large value for minproc reduces the memory needed for
+#  a given run
+#
+#  If you are running on a different system, you will have to
+#  change options to reflect your system.  If there are any
+#  bugs in this makefile, please contact the authors at
+#  mehl@dave.nrl.navy.mil
+#
+#                                      --  Mike Mehl
+#                                      --  Naval Research Laboratory
+#                                      --  4 March 1998
+#                                      --  Revised 19 Aug 2002
+#
+# This is an attempt to integrate the serial and parallel versions
+#  of static.  To do this, we'll put in some dummy subroutines
+#  to make fake MPI calls when we integrate the static version
+
+# Here's what you get for various command line options with make, assuming
+# that you've set COMMAND=static below:
+
+# make			=> static.parlib  (Parallel MPI version, SGI math libraries) (default)
+# make parlib		=> static.parlib  (Parallel MPI version, SGI math libraries) (default)
+# make parnlb		=> static.parnlb  (Parallel MPI version, lapack.f)
+# make scrlib		=> static.scrlib  (Scalar version, SGI math libraries)
+# make scrnlb		=> static.scrnlb  (Scalar version, lapack.f)
+
+COMMAND=static
+
+CFT=f77
+
+FFLAGS = -d8 -r8 -O3 -n32
+
+.SUFFIXES: .o .f
+
+.f.o :
+	$(CFT) $(FFLAGS) $*.f -c
+
+#   Note that FORS deliberately does not mention lapack.f, dlamch.f or mpifake.f
+
+    FORS= static.f input.f input1.f setlat.f rotate.f setpar.f \
+    setparv.f diag.f search2.f spinham.f setham.f sethamv.f addspins.f \
+    bande.f fermi.f hsort.f mapk.f matmlt.f kptin.f kptgen.f rdspgp.f \
+    gdot.f perturb.f modeparse.f tweaks.f
+
+    OBJS= static.o input.o input1.o setlat.o rotate.o \
+    diag.o setham.o sethamv.o addspins.o setpar.o setparv.o spinham.o \
+    search2.o bande.o fermi.o hsort.o mapk.o matmlt.o kptin.o kptgen.o \
+    rdspgp.o gdot.o perturb.o modeparse.o tweaks.o
+
+# Parallel code, use SGI libraries (default)
+
+parlib:	nompifh $(OBJS)
+	$(CFT) $(FFLAGS) $(LDFLAGS)  -o $(COMMAND).parlib $(OBJS) -lcomplib.sgimath -lmpi $(LIBS)
+	strip $(COMMAND).parlib
+
+# Parallel code, use lapack.f
+
+parnlb:	nompifh $(OBJS) lapack.o dlamch.o
+	$(CFT) $(FFLAGS) $(LDFLAGS)  -o $(COMMAND).parnlb $(OBJS) lapack.o dlamch.o -lmpi $(LIBS)
+	strip $(COMMAND).parnlb
+
+# Scalar code, use SGI libraries:
+
+scrlib:	addmpifh $(OBJS) mpifake.o
+	$(CFT) $(FFLAGS) $(LDFLAGS)  -o $(COMMAND).scrlib $(OBJS) mpifake.o -lcomplib.sgimath $(LIBS)
+	rm -f mpif.h
+	strip $(COMMAND).scrlib
+
+# scrlib code, use lapack.f
+
+scrnlb:	addmpifh $(OBJS) lapack.o dlamch.o mpifake.o
+	$(CFT) $(FFLAGS) $(LDFLAGS)  -o $(COMMAND).scrnlb $(OBJS) mpifake.o lapack.o dlamch.o $(LIBS)
+	rm -f mpif.h
+	strip $(COMMAND).scrnlb
+
+# No optimization for dlamch (SGI Origin flags):
+
+dlamch.o:
+	$(CFT) -d8 -r8 -n32 -c dlamch.f
+
+# Remove the fake mpif.h header so that we can link with the real MPI headers:
+
+nompifh:
+	rm -f mpif.h
+
+# This routine puts the fake header file mpif.h, used for single processor
+#   runs, where we want it.
+
+addmpifh:
+	cat mpifake.h > mpif.h
+
+clean:
+	rm -f *.o
+	rm -f mpif.h
+
+# Dependencies
+
+bande.o: P1 P2 P3
+diag.o: P1 P2
+input.o: P1
+input1.o: P1
+kptgen.o: P1 P3
+kptin.o: P1 P3
+rdspgp.o: P1 P3
+rotate.o: P1
+search2.o: P1
+setham.o: P1
+sethamv.o: P1
+setpar.o: P1
+setparv.o: P1
+static.o: P1 P2 P3
+tweaks.o: P1 P2 P3
+

@@ -1,0 +1,820 @@
+
+
+*******************************************************************************
+Sat Jul 29 01:24:06 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Sat Jul 29 01:24:06 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Sat Jul 29 01:37:10 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Sat Jul 29 01:37:10 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:22:28 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:22:28 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:22:50 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:22:50 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:23:13 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:23:13 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:24:15 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Sun Jul 30 20:24:15 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:11:45 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:11:45 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:13:20 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:13:20 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:28:00 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:28:00 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:37:57 2017
+
+
+FIT:    data read from "< grep fcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(ef,vf,kf,kfp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   ef            vf            kf            kfp          
+   0 1.5046811749e-04   0.00e+00  7.33e-02    1.000000e-03   9.800000e+01   1.000000e-02   4.000000e+00
+   6 2.5860873521e-07  -1.91e-04  7.33e-08   -3.864921e-04   9.734741e+01   1.573102e-02   3.552351e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 2.58609e-07
+rel. change during last iteration : -1.91148e-09
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000227424
+variance of residuals (reduced chisquare) = WSSR/ndf   : 5.17217e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ef              = -0.000386492     +/- 0.0001303    (33.71%)
+vf              = 97.3474          +/- 0.08799      (0.09039%)
+kf              = 0.015731         +/- 0.0002927    (1.861%)
+kfp             = 3.55235          +/- 0.2868       (8.073%)
+
+correlation matrix of the fit parameters:
+                ef     vf     kf     kfp    
+ef              1.000 
+vf             -0.243  1.000 
+kf             -0.753  0.234  1.000 
+kfp             0.584 -0.673 -0.833  1.000 
+
+
+*******************************************************************************
+Tue Aug  1 17:37:57 2017
+
+
+FIT:    data read from "< grep bcc SKENG | awk '{print $3, $5}'"
+        format = z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: e(eb,vb,kb,kbp,x)
+	e(eo,vo,ko,kop,v) = eo + 1.125*ko*vo*t(vo,v)*t(vo,v)* (1.0 + 0.5*(kop-4.0)*t(vo,v))
+	t(vo,v) = (vo/v)**.666666666666666667 - 1.0
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   eb            vb            kb            kbp          
+   0 9.1083208323e-04   0.00e+00  7.06e-02    1.500000e-02   1.000000e+02   1.000000e-02   1.000000e+00
+   6 1.0876558666e-06  -4.00e-03  7.06e-08    8.485549e-03   9.901360e+01   1.475228e-02   3.393176e+00
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 1.08766e-06
+rel. change during last iteration : -4.0031e-08
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000466402
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.17531e-07
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+eb              = 0.00848555       +/- 0.0002727    (3.214%)
+vb              = 99.0136          +/- 0.1395       (0.1409%)
+kb              = 0.0147523        +/- 0.0004336    (2.939%)
+kbp             = 3.39318          +/- 0.2792       (8.229%)
+
+correlation matrix of the fit parameters:
+                eb     vb     kb     kbp    
+eb              1.000 
+vb             -0.131  1.000 
+kb             -0.743 -0.009  1.000 
+kbp             0.638 -0.421 -0.875  1.000 

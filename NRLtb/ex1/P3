@@ -1,0 +1,40 @@
+c
+c     This file controls the dimensions of k-point arrays in the
+c      static code
+c
+c=======================================================================
+c
+c     nkd is the maximum number of k-points in the irreducible part of
+c      the Brillouin zone used in the calculation
+c
+      integer nkd
+      parameter (nkd = 50000)
+c
+c     nopd is the maximum number of space group operations for the
+c      current group.  Since 48 is the maximum for a 3-d lattice, and
+c      there is only a small size penalty, we usually keep nopd = 48.
+c
+      integer nopd
+      parameter (nopd=48)
+c
+c     minproc is the lower bound on the number of processors in the
+c      current run.  Trying to run a job with fewer processors will
+c      generate an error message and abort the run.  This means
+c      that minproc must be set to 1 for scalar computing.
+c
+      integer minproc
+      parameter (minproc=1)
+c
+c     nkdproc is then the number of k-points allotted to each processor,
+c      correcting for rounding:
+c
+      integer nkdproc
+      parameter (nkdproc = nkd/minproc + 1)
+c
+c     nwdd is the number of energy "windows".  This concept is inherited
+c      from the LAPW k-point generation code, and will be removed in a
+c      future version of the program.  "1" is always correct in the TB
+c      calculation.
+c
+      integer nwdd
+      parameter (nwdd=1)

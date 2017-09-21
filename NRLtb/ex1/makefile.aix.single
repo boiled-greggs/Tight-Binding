@@ -1,0 +1,136 @@
+SHELL=/bin/sh
+#
+#
+#  This is the makefile for the SCALABLE version of static, the
+#  tight-binding total energy and electronic structure evaluation
+#  program.  The code is written using Fortran 77 and MPI.
+#
+#  This particular version is for the AIX compiler for IBM SP
+#  systems in scalar mode.
+#
+#  Note that this requires you to set minproc=1 in P3, otherwise the
+#  code will not run.
+#
+#  To compile for a parallel machine, use makefile.aix.parallel
+#
+#  If there are any bugs in this makefile, please contact the authors at
+#  mehl@dave.nrl.navy.mil
+#
+#                                      --  Mike Mehl
+#                                      --  Naval Research Laboratory
+#                                      --  4 March 1998
+#                                      --  Revised 16 Aug 2002
+#
+# This is an attempt to integrate the serial and parallel versions
+#  of static.  To do this, we'll put in some dummy subroutines
+#  to make fake MPI calls when we integrate the static version
+
+COMMAND=static.scalar
+
+CFT=xlf
+
+# For smaller jobs you can get away with this:
+
+# FFLAGS = -O -qdpc
+
+# But for large arrays you'll need this:
+
+FFLAGS = -O2 -bmaxdata:0x40000000
+
+.SUFFIXES: .o .f
+
+.f.o :
+	$(CFT) $(FFLAGS) $*.f -c
+
+#   Note that FORS deliberately does not mention lapack.f, dlamch.f or mpifake.f
+
+    FORS= static.f input.f input1.f setlat.f rotate.f setpar.f \
+    setparv.f diag.f search2.f spinham.f setham.f sethamv.f addspins.f \
+    bande.f fermi.f hsort.f mapk.f matmlt.f kptin.f kptgen.f rdspgp.f \
+    gdot.f perturb.f modeparse.f tweaks.f
+
+    OBJS= static.o input.o input1.o setlat.o rotate.o \
+    diag.o setham.o sethamv.o addspins.o setpar.o setparv.o spinham.o \
+    search2.o bande.o fermi.o hsort.o mapk.o matmlt.o kptin.o kptgen.o \
+    rdspgp.o gdot.o perturb.o modeparse.o tweaks.o
+
+# Scalar code for AIX on IBM SPs:
+
+scalar:	addmpifh $(OBJS) lapack.o dlamch.o mpifake.o
+	$(CFT) $(FFLAGS) -o $(COMMAND) $(OBJS) lapack.o dlamch.o mpifake.o
+	strip $(COMMAND)
+	chmod 755 $(COMMAND)
+	rm -f mpif.h
+
+# Compile dlamch.f without optimization (AIX flags)
+
+dlamch.o:
+	$(CFT) -bmaxdata:0x40000000 -c dlamch.f
+
+# This routine puts the fake header file mpif.h, used for single processor
+#   runs, where we want it.
+
+addmpifh:
+	cat mpifake.h > mpif.h
+
+# If you don't like a2ps as your pretty printer, substitute your favorite
+#  on this line.  The "-Av" is the current way to print two files on
+#  the same sheet of paper.
+
+print:
+	a2ps --medium=Letter -Av makefile.* P1 P2 P3 $(FORS) mpifake.[fh] -o static.ps
+
+# This provides a printout of the documentation included in this directory,
+#  NOT the on-line manual:
+
+docprint:
+	a2ps --medium=Letter -Av 0README* INSTALLATION REVISION_HISTORY -o docs.ps
+
+# This command remakes the ALLSOURCE.tgz from the current versions
+#  of the subroutines makefile, and P1-3, including lapack.f and dlamch.f
+
+package:
+	rm -f ALLSOURCE.tgz
+	tar cvf ALLSOURCE.tar 0README* INSTALLATION REVISION_HISTORY makefile* P1 P2 P3 $(FORS) lapack.f dlamch.f mpifake.[fh]
+	chmod 444 ALLSOURCE.tar
+	gzip -9 ALLSOURCE.tar
+	mv ALLSOURCE.tar.gz ALLSOURCE.tgz
+
+# If for some reason you want the entire program, less the LaPack routines
+#  and mpifake.*, in one file:
+
+concat:
+	cat $(FORS) > static.for
+
+# Your computer center may not have
+# the ftnchek program available, but it is so useful that I am
+# leaving it here.  This will really check the serial code.  Note
+# that mpifake.f, dlamch.f and lapack.f are left out, as they are pretty well
+# debugged and generate a lot of parameter type errors:
+
+fcheck:
+	cat mpifake.h > mpif.h
+	ftnchek $(FORS) > ftnchek.report
+	rm mpif.h
+
+clean:
+	rm -f *.o
+	rm -f mpif.h
+
+# Dependencies
+
+bande.o: P1 P2 P3
+diag.o: P1 P2
+input.o: P1
+input1.o: P1
+kptgen.o: P1 P3
+kptin.o: P1 P3
+rdspgp.o: P1 P3
+rotate.o: P1
+search2.o: P1
+setham.o: P1
+sethamv.o: P1
+setpar.o: P1
+setparv.o: P1
+static.o: P1 P2 P3
+tweaks.o: P1 P2 P3

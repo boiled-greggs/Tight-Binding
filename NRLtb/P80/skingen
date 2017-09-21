@@ -1,0 +1,1219 @@
+#!/bin/sh
+#!perl
+eval 'exec perl -x $0 ${1+"$@"}'
+    if $running_under_some_shell;
+
+# The above trick from Noam Bernstein.  It should find Perl if it is
+# in any directory in your path.  Otherwise, use
+
+##! /usr/bin/perl -w
+
+# Removing one of the "#", and changing /usr/bin/perl to point to
+# wherever Perl may be
+
+# Other path names may need to be changed.  See the section
+# 'PRELIMINARY DEFINITIONS', below.
+
+# *******************************************************************
+# *******************************************************************
+
+# skingen Initial Alpha Release -- 0.011
+
+# NOTE THAT THIS VERSION IS EXCEEDINGLY ALPHA.  ERROR FIXES AND
+# SUGGESTIONS FOR IMPROVEMENT ARE WELCOME.
+
+# This experimental program constructs a SKIN (Slater-Koster INput)
+# file for use by the Dod ``static'' tight-binding code.  For
+# more information about the static code, see
+# http://cst-www.nrl.navy.mil/bind/static/.
+
+# Note that this code will NOT create the all possible SKIN files.
+# It will, however, create a large subset of them, and is extendable
+# by either the user or the author.  If you think you have a
+# particularly nice addition to this code, please email me a copy
+# (with examples of how it is used) and I will consider it for
+# inclusion in this code.
+
+# This program is written in Perl (Practical Extraction and Report
+# Language).  It needs a working Perl distribution in order to work.
+# I chose Perl for this task because there is a Perl distribution
+# for almost every computer in existence.  For more information
+# about Perl see the Perl Institute's Home Page at
+# http://www.perl.org/.
+
+# What I didn't learn about Perl from www.perl.org I learned from
+# the book ``Learning Perl, Second Edition'' by Randal L. Schwartz
+# and Tom Christiansen (O'Reilly, Cambridge, Beijing, Kõln, etc.,
+# 1997, ISBN 1-56592-284-0).  There are many other fine books about
+# Perl on the market, but this is the one I happened upon first.
+#
+# Online, you might want to try "Perl by Example", at
+# http://www.codebits.com/p5be/
+#
+# The disclaimer below applies here, too.
+
+# Created by Mike Mehl, (mehl@dave.nrl.navy.mil).
+# Alpha version 0.01 released on 20 May 1999.
+
+# Note the standard disclaimer, which especially applies to this program.
+
+# This software and any accompanying documentation are released "as
+# is." The U.S. Government makes no warranty of any kind, expressed
+# or implied, concerning this software and any accompanying
+# documentation, including without limitation, any warranties of
+# merchantability or fitness for a particular purpose. In no event
+# will the U.S. Government be liable for any damages, including any
+# lost profits, lost savings, or other incidental or consequential
+# damages arising out of the use, or inability of use, of this
+# software or any accompanying documentation, even if informed in
+# advance of the possibility of such damages.
+
+# ********************************************************************
+# **********************REVISION HISTORY******************************
+# ********************************************************************
+
+# 0.01:		Initial Release				20 May 1999
+# 0.011:	Finished adding "default" input values	24 May 1999
+# 0.012:        Not quite:  added "default" Fermi temperature
+#                    of 0.005 Ry (789 K)                 5 Aug 1999
+# 0.013:        Forgot to add a "\n" when printing the strain
+#                    parameter for $strain_type > 1.
+#                    Fixed.                             10 Aug 1999
+# 0.014:	Forgot another "\n" when printing out the scale
+#                    factors for lattice type 0.  Fixed 13 Aug 1999
+ 
+# ********************************************************************
+# *******************PRELIMINARY DEFINITIONS**************************
+# ********************************************************************
+
+# All that done, let's start the program.
+
+# Several of the subroutines refer to "default" values for certain
+# input variables.  On the first iteration there are no such default
+# values, so we supply them here:
+
+# Temperature input:
+
+$temp_default = 0.005;
+
+# In read_label:
+
+$long_label = " ";
+$short_label = " ";
+
+# In lat_con
+
+@primvec = ("1 1 1","1 0 0","0 1 0","0 0 1");
+$latpar = " ";
+
+# lat_list is needed by the lat_con subroutine to determine what to
+# do with each type of lattice
+
+@lat_list = ("1","2","2","3","2","3","3","4","4","3","3","3","5","3","3");
+
+# The only ``external'' input required is the location of the
+# auxillary file directory for the program.  This auxillary
+# directory should have been constructed when you first downloaded
+# this program.  For our purposes here it contains several space
+# group files (e.g. for fcc, bcc, simple cubic and hcp lattices) as
+# well as some pregenerated k-point files.  The machine I'm
+# currently using has these files in the directory
+
+# $auxdir = "/home/mehl/public_html/static/scripts/";
+$auxdir = "/home/mehl/skfits/many/scripts/";
+
+# ****************************************************************
+# *******************START EXECUTION OF SCRIPT********************
+# ****************************************************************
+
+print "\nWelcome to the NRL SKIN file generator\n\n";
+
+# See if there is really a path to $auxdir, and that it is truly a
+# directory.  If not, give the user a warning and an opportunity to
+# fix this line.
+
+if (!-d $auxdir) {
+
+# Danger Will Robinson!
+
+print "
+
+ **************************** WARNING ****************************
+
+The Perl script skingen lists the directory $auxdir
+as your 'Auxillary Directory' in the Perl file skingen.  This
+directory should contain certain space group and k-point files which
+may make your life easier when you want to construct a k-point mesh.
+Unfortunately, this directory does not exist.  You now have two
+options:
+
+(1) (default) Stop the program, editing the file 'skingen' to point
+    to a directory which does exist, or
+
+(2) Ignore this error.  In this case, the program will run just fine,
+    unless you refer to a file from the non-existent directory.
+
+Enter your choice:  ";
+
+$auxchoice = <STDIN>;
+chomp($auxchoice);
+
+if ($auxchoice == 2) {print "\nOK\n"} else
+{die "\nPlease edit the scalar variable \$auxdir in the skingen script
+so that it points to a valid directory.\n"}
+
+}
+
+# Check for the existence of a SKIN file:
+
+if (-e "SKIN") {
+print 'This program creates a file named "SKIN".
+Since you already have such a file, you must remove or rename it
+before running skingen.
+';
+
+print "(0) exit (default)\n(1) Remove file\n(2) Rename file
+Your choice?  ";
+
+$whattodo = <STDIN>;
+chomp($whattodo);
+
+# Does this string have any length?
+
+unless (defined(chomp($whattodo))) {
+    die ("\nSKIN exists and was not removed\n\n");}
+
+if ($whattodo == 1)
+{unlink("SKIN") || die("\nSKIN could not be removed\n");
+ print "\nOld SKIN file removed, starting new file\n\n";}
+elsif ($whattodo ==2)
+{print "Enter the new name:  ";
+ $nskname = <STDIN>;
+ chomp($nskname);
+ rename("SKIN",$nskname) || die {"\nCan't rename SKIN to $nskname\n\n"};
+ print "\nOld SKIN file was renamed $nskname\n\n";}
+else{die ("\nSKIN exists and was not removed\n\n");}
+}
+
+# Open SKIN for writing:
+
+open(SKIN, ">SKIN");
+
+# This construct is made necessary because $&#**&% Perl doesn't have
+# a goto operator
+
+$mode = "h";
+
+while ($mode eq "h") {
+
+print "Enter the mode you want to use (1-9, h for help): ";
+
+$mode = <STDIN>;
+
+# We only want/need the first character
+
+$mode = substr($mode,0,1);
+
+# Mode seven is not implemented as yet:
+
+if ($mode == 7) {print "Sorry, there is no implementation of Mode 7\n";
+		 $mode = "h";
+		 next}
+
+# Test for help.  Actually, we want anything except 1-9 will
+# generate the help message.
+
+if ($mode =~ /[1-9]/) {last}
+
+# If we get here, the mode must be h:
+
+$mode = "h";
+
+print "
+----------------------------------------------------------------------
+The mode tells the program which type of calculation you
+want to perform.\n
+There are currently eight allowed modes (7) is omitted.
+
+1 -- Prints the Gillan extrapolation to E(0) and E(T) in the SKENG file
+2 -- Prints extrapolated E(0) and P(0) in the SKENG file
+3 -- Total Energy [E(T)], no Pressure
+4 -- Total Energy and Pressure [P(T)]
+5 -- Mode 6 with QLMT output in unformatted Fortran file
+6 -- Total Energy, no Pressure, and produces an LAPW like QLMT file
+8 -- Total Energy, and no Pressure, and produces an APW like
+        eigenvalue file (called QAPW)
+9 -- QLMT like file with \"0\" atoms
+
+For more information, see the static manual page
+http://cst-www.nrl.navy.mil/bind/static/usage.html#modes
+----------------------------------------------------------------------
+";
+
+}
+
+print "\nUsing mode $mode\n";
+
+print SKIN "Mode=$mode\n";
+
+# Next is the temperature and eigenvalue cutoff, if needed
+
+# Go through the same type of rigamarole.  I wonder if this could be
+# made into a subroutine.
+
+$t1 = "h";
+
+while ($t1 eq "h") {
+
+print
+"\nEnter the Fermi temperature (default = $temp_default Ry) for \n
+the electron states (>=0, h==help):  ";
+
+$t1 = <STDIN>;
+
+# We may need the entire line.  We also want only the first "word",
+# whatever that may be:
+
+chomp($t1);
+
+@dumary = split(" ",$t1);
+
+# If <STDIN> is blank, $dumary[0] is undefined.  Test for this.
+#  If defined, use this value for $temper.  Otherwise use the
+#  default
+
+# $temper = $dumary[0];
+
+unless (defined($temper = $dumary[0])) {$temper = $temp_default}
+
+# The first character of $temper should be a number, +, or . .
+# It cannot be a minus, because negative temperatures are not allowed.
+# Any other input means print the help file
+
+$t1st = substr($temper,0,1);
+
+if ($t1st =~ /[0-9+.]/) {last}
+
+if ($t1st eq "-") {
+print "\nNegative temperatures are not allowed\n";
+$t1 = "h";
+next}
+
+$t1 = "h";
+
+print "
+----------------------------------------------------------------------
+The Fermi temperature for the electronic states is used to
+smooth out the electronic distribution to make the integrals
+converge faster.  A typical value for the temperature is 0.005 Ry.
+For more information, see the static manual at, e.g.,
+http://cst-www.nrl.navy.mil/bind/static/example1/page2.html
+
+Temperatures are in Rydbergs (1 Ry = 157886.6 K)
+----------------------------------------------------------------------
+";
+
+}
+
+print "T_{Fermi} = $temper\n";
+
+# Certain modes need a cutoff value for the eigenvalues
+
+# Save variables if we can
+
+# Same kind of deal, except that $cuttemp can be negative:
+
+$t1 = "h";
+
+if ($mode =~ /[2456]/) {
+
+while ($t1 eq "h") {
+
+print
+"\nEnter the eigenvalue cutoff energy (>=0, default = 100, h==help):  ";
+
+$t1 = <STDIN>;
+
+chomp($t1);
+
+@dumary = split(" ",$t1);
+
+# If <STDIN> is a blank line, dumary[0] is undefined.  We can test
+# for this and then set the default value.
+
+unless (defined($cuttemp = $dumary[0])) {$cuttemp = 100}
+
+$t1st = substr($cuttemp,0,1);
+
+if ($t1st =~ /[0-9+.\-]/) {last}
+
+$t1 = "h";
+
+print"
+----------------------------------------------------------------------
+Modes which require eigenvector calculations can take a lot of time
+unless the eigenvalue spectrum is restricted.  To do this we set an
+eigenvalue cutoff.  Eigenvalues above this energy will not have
+eigenvectors calculated.  The temperature should be at least twenty
+times the Fermi temperature above the highest Fermi level in the
+calculation, otherwise errors may result.  If you can not guess this
+value, use the default value of 100 Ry
+----------------------------------------------------------------------
+";
+}
+print "\nCutoff temperature is $cuttemp Ry\n";
+} else{print "Mode = ",$mode,"\n"; $cuttemp = 100}
+
+
+print SKIN "$temper   $cuttemp\n";
+
+# Now get the parameter file.  At the moment we will not check for
+# its existence, or how many atom types it includes.
+
+print "\nEnter the path to the tight-binding parameterization file:\n";
+
+$tbpar = <STDIN>;
+
+# Note that we do not need to chomp:
+
+print SKIN $tbpar;
+
+# Start counting structures
+
+$jstruc = 1;
+
+# First we need labels
+
+# The labels can change for different structures, so put them into a
+# subroutine
+
+read_label ();
+
+# We will assume that the unit cell is uncharged:
+
+print SKIN " 0.00                (No extra electrons in the unit cell)\n";
+
+
+# Get the lattice type.  Note that we will NOT allow this to be
+# changed between structures, so all of this part of the information
+# can be entered in the main program.
+
+# Lattice type information.  We will give some help options here, too:
+
+while () {
+
+print "\nEnter the lattice type (-14,...,14,h=help):  ";
+
+$t1 = <STDIN>;
+
+# We only need the first "word" here:
+
+chomp($t1);
+@dumary = split(" ",$t1);
+$latype = $dumary[0];
+
+# Is this even a possible number?  If so, is this a number between
+# -14 and 14?  If not, send it back for help:
+
+print "Lattice type $latype\n";
+
+$t1st = substr($latype,0,1);
+
+# Note that we do not want decimals, but we will take + and - signs:
+
+if ($t1st =~ /[0-9+\-]/) {
+
+# Make sure $latype is interpreted as a number:
+
+    $latype = 1*$latype;
+#   print $latype, "\n";
+
+    if ( ($latype > -15) and ($latype < 15)) {last}
+}
+
+print "
+----------------------------------------------------------------------
+
+static currently offers 14 different predefined lattice types.  A
+complete description of these types are given in the static manual
+at http://cst-www.nrl.navy.mil/bind/static/lattypes.html.  This help
+section provides a short summary.
+
+Except for lattice type 0, all predefined lattices have two forms.
+For example, for the fcc lattice, a lattice type of \"+1\" indicates
+that the lattice is described by its cubic lattice constant, a,
+while \"-1\" indicates the unit cell volume V will be input.
+
+Lattice type 0 is the general lattice.  You will have to enter the
+Cartesian components of all three lattice vectors, plus a scale
+factor for each Cartesian direction.  The default scale factor is 1.
+
+Here is a brief chart of the lattice types.  For more information,
+see the manual page.
+
+ n |	    Type	 |			Input
+   |			 |	    +n		  |	     -n		 |
+ 0 |       General	 | All Cartesian coordinates, plus scale factors |
+ 1 |         fcc	 |	     a		  |	      V		 |
+ 2 |         bcc	 |	     a		  |	      V		 |
+ 3 |         hcp	 |	    a,c		  |         V, c/a	 |
+ 4 |     simple cubic	 |	     a		  |	      V		 |
+ 5 |      tetragonal	 |	    a,c		  |         V, c/a	 |
+ 6 |         bct	 |	    a,c		  |         V, c/a	 |
+ 7 |     orthorhombic	 |	   a,b,c	  |       V, b/a, c/a	 |
+ 8 | base-centered ortho |	   a,b,c	  |       V, b/a, c/a	 |
+ 9 | 45 deg rotated tet	 |	    a,c		  |         V, c/a	 |
+10 | 	     fct	 |	    a,c		  |         V, c/a	 |
+11 |    'fcc-like' fct	 |	    a,c		  |         V, c/a	 |
+12 |     rhombohedral	 |	  'a','b'	  |	V , angle (rad)	 |
+13 |	'bcc-like' bct	 |	    a,c		  |         V, c/a	 |
+14 | base-centered ortho |       a,c,theta        |     V , c/a , theta  |
+
+----------------------------------------------------------------------
+";
+}
+print SKIN $latype,"\n";
+
+
+# Get the appropriate lattice constants for this lattice.  We DO
+# allow this to change between structures, so we will put this
+# information into a subroutine.
+
+lat_con ();
+
+# Now get the lattice strain type.  Again, the actual strain type,
+# if any, CANNOT change between structures, but the value of the
+# strain can.
+
+while () {
+
+print "\nEnter the strain type [0=none, h=help]:  ";
+
+$t1 = <STDIN>;
+chomp($t1);
+@dumary = split(" ",$t1);
+$strain_type = $dumary[0];
+
+
+# if strain_type is ANY number we will let it pass.  Unless, of
+# course, it starts with a decimal point, which is obviously wrong.
+# Otherwise, invoke help
+
+$t1st = substr($strain_type,0,1);
+
+# Note that we do not want decimals, but we will take + and - signs:
+
+if ($t1st =~ /[0-9+\-]/) {
+
+# Make sure $strain_type is interpreted as a number, and be gone:
+
+    $strain_type = 1*$strain_type;
+    last;
+}
+
+# Here we are in another help section:
+
+print "
+----------------------------------------------------------------------
+
+Although we have already set up the lattice, in certain cases (e.g.,
+the calculation of elastic constants) it is desirable to allow
+further strains in terms of the strain parameters e(i)
+(i=1,2,3,4,5,6).  More information about this can be found in the
+static manual at
+      http://cst-www.nrl.navy.mil/bind/static/straintype.html
+A value of zero (0) means no strain is applied.  A value of '1' means
+that you want to read in all six strain parameters.  Other values,
+as noted in the manual, construct certain strains from only one (1)
+input parameter.
+
+Note that skingen does NOT check to see if the value you have
+entered is allowed.  The only checks made is to see if your input
+can be interpreted as a number by Perl rules, and if that number is
+zero or one.
+----------------------------------------------------------------------
+";
+
+}
+
+# Since we will allow the strains to vary in a given iteration,
+#  put this information into a subroutine:
+
+strain_par ();
+
+# Reverse the order of this a bit.  Note that we will, again, NOT
+# allow the search distance to change inside this particular file.
+
+$search = "4 4 4";
+print "
+How far should we search for neighbors along each primitive lattice
+vector? (default = \"$search\")  ";
+
+# If <STDIN>; returns a null value, use the default value of $search:
+
+# $search = <STDIN>;
+# chomp($search);
+
+$t1 = <STDIN>;
+chomp ($t1);
+
+# If $t1 is the empty string it should be false.  If so, use the
+# default value.
+
+# Note that $t1 = "0" will also return false, but that string would
+# produce nonsense output anyway, so it is best to revert to the
+# default.
+
+if ($t1) {$search = $t1}
+
+# The number of atoms in the unit cell will not be allowed to change
+# within this SKIN file
+
+$atom_number = 1;
+
+print "\nHow many atoms in this structure (Default $atom_number)?  ";
+
+#$atom_number = <STDIN>;
+#chomp($atom_number);
+read_or_default ($atom_number);
+
+# We should check to make sure this is positive, but for now we will
+# just print it out,
+
+print SKIN $atom_number,"               Atoms in the unit cell\n";
+
+# Now print the search string.  In addition, we are not going to
+# allow extra atomic displacements here, so we will put a "F" on the
+# next line.
+
+print SKIN $search,"             search limits\n",
+"F                            No additional displacements\n";
+
+# The atom positions are next.  Since these can vary from lattice to
+# lattice we will but this part of the routine in a subroutine:
+
+# Except for this, which will not change:
+
+print "\nEnter atomic positions in
+(1) lattice (default) or (2) Cartesian coordinates:  ";
+
+$pos_type = 1;
+
+# $pos_type = <STDIN>;
+# chomp($pos_type);
+read_or_default ($pos_type);
+
+# Really we want $pos_type=0 to be lattice and $pos_type=1 to be
+# Cartesian, but it is easier to read them in this way.
+
+if ( $pos_type == 2 ) {$pos_type = 1} else {$pos_type = 0}
+
+@pos_form = ("lattice","Cartesian");
+
+print "The atomic positions will be in ",$pos_form[$pos_type],
+" coordinates\n";
+
+atom_pos ();
+
+# Now get the k-point information.  On the first go round, we must
+# construct a k-point mesh, so
+
+print SKIN "NEWSYM=T                (Construct new k-point mesh)\n";
+
+# gets printed into the file.
+
+# Unless we have a special lattice, the next line is "LATTIC=1":
+
+if (abs($latype) == 2) {
+
+# bcc lattice
+
+print SKIN "LATTIC=2\n"} elsif (abs($latype) == 3) {
+
+# hcp lattice
+
+print SKIN "LATTIC=4\n"} else {
+
+# general lattice
+
+print SKIN "LATTIC=1\n"}
+
+# Get the space group.  This is another help section:
+
+$spgopt = "h";
+
+while ($spgopt eq "h") {
+
+print "\nSelect a space group:
+(0=general,1=fcc/bcc/sc/diamond,2=hcp/hexagonal/graphite,3=path,h=help):  ";
+
+# We only need the first character, and it can be a "\n":
+
+$spgopt = <STDIN>;
+$spgopt = substr($spgopt,0,1);
+
+if( $spgopt =~ /^[0123]/ ) {last}
+
+$spgopt = "h";
+
+print "
+----------------------------------------------------------------------
+
+A spacegroup file is necessary to construct the most efficient
+k-point mesh for this lattice.  Space group files for many
+structures are available in the Crystal Lattice Structures Database at
+		http://cst-www.nrl.navy.mil/lattice/ .
+The directory $auxdir
+contains several space group files, including
+
+(0) The general case (use this if you do not know the space group)
+(1) Fully cubic systems, including fcc, bcc, simple cubic, and diamond
+(2) Fully hexagonal systems, including simple hexagonal, hcp, and graphite
+
+or, using option 3, you may enter the path name to a space group file.
+In this case you must determine if the file is in lattice or Cartesian
+coordinates.
+
+For more information about space group files in the static program,
+see the section Space Group File on page
+http://cst-www.nrl.navy.mil/bind/static/input_files.html of the
+static manual.
+
+----------------------------------------------------------------------
+";
+}
+
+if ( $spgopt == 0 ) {
+
+# Set up the default value for the spacegroup.
+
+print SKIN $auxdir . "spcgrp.default\n";
+print SKIN "ILAT=F                (Cartesian coordinate space group file)\n";
+
+} elsif ( $spgopt == 1 ) {
+
+# We can use any cubic lattice Cartesian space group so long as we
+# do not use the space group to position the atoms
+
+print SKIN $auxdir . "fcc/spcgrp.fcc\n";
+print SKIN "ILAT=F                (Cartesian coordinate space group file)\n";
+
+} elsif ( $spgopt == 2 ) {
+
+# Similar statements apply for the Hexagonal lattices.  Note that
+# here it is best to use the lattice coordinate form.
+
+print SKIN $auxdir . "hcp/spcgp1\n";
+print SKIN "ILAT=T                (lattice coordinate space group file)\n";
+
+} elsif ( $spgopt == 3 ) {
+
+# Read in a space group file, check for its existence, and issue a
+# warning if it is not really there.
+
+print "\nEnter the path name to the space group file:  ";
+$spg_file = <STDIN>;
+chomp ($spg_file);
+
+if (!-r $spg_file) {print "\nI can not find the file
+$spg_file .
+I hope you create it before you run the static code\n"}
+
+print SKIN $spg_file,"\n";
+
+print "\nIs this file in (1) Cartesian (default) or (2) lattice coordinate?  ";
+
+# Again, we only need one character:
+
+$coordtype = <STDIN>;
+$coordtype = substr($coordtype,0,1);
+
+if ($coordtype == 2) {
+print SKIN "ILAT=T                (lattice coordinate space group file)\n"}
+else {
+print SKIN "ILAT=F                (Cartesian coordinate space group file)\n"}
+
+} else {
+
+print "\nHmph.  You are not supposed to be able to get here.  Please
+report this as a bug to mehl\@dave.nrl.navy.mil\n"}
+
+# I have come to the last section for the first structure.  (Cheers,
+# shouts, expressions of merriment, etc.)
+
+# Quiet.  Carnac left the building years ago.
+
+# The final thing we need to do is choose a k-point mesh.  Of
+# course, this comes in three varieties:
+# Use a predefined set, read in a set, or have the program generate them.
+
+# A help file is once again required.  This is the last one, I think.
+
+# Note that we can use an empty while string and exit with a "next".
+# Duh.
+
+while () {
+
+print "\nFinally, choose a k-point set for this calculation:
+(1) predefined, available for some structures
+(2) your own premade k-point file
+(3) let the program create a mesh
+(h) help (default)
+Your choice?  ";
+
+$kpick = <STDIN>;
+$kpick = substr($kpick,0,1);
+
+if ($kpick =~ /^[123]/) {last}
+
+print "
+------------------------------------------------------------------------
+K-points are needed to approximate the Brillouin zone integral which
+determines the total energy of this structure.  For more information
+about how k-points are selected, see the k-point page at
+
+	       http://cst-www.nrl.navy.mil/bind/kpts/ .
+
+This program lets you use one of the predefined k-point sets from this
+page (option 1), you can use your own set of points (option 2, see
+
+	 http://cst-www.nrl.navy.mil/bind/kpts/format.html ),
+
+or let the program define a mesh (3).  If you do the latter, you
+will need to specify whether the mesh is \"regular\" or \"special\",
+and define the number of divisions along each reciprocal space
+primitive vector.
+
+Note that option (1) is only available for a limited set of structures.
+------------------------------------------------------------------------
+";
+
+}
+
+if ( $kpick == 1 ) {
+# Predefined k-points
+
+print "\nPre-defined k-points are available for
+(1) fcc/diamond, (2) bcc, (3) sc, (4) hexagonal/hcp lattices.
+Please pick one:  ";
+
+$kptf = substr(<STDIN>,0,1) -1;
+
+if ( ($kptf < 0) or ($kptf > 3) )
+{die "\nNo predefined k-point mesh of type $kptf\n"}
+
+# Read directory type from an array:
+
+@kloc = ("fcc","bcc","sc","hcp");
+
+system ( "ls -l ${auxdir}$kloc[$kptf]" ) &&
+    die ("\nCan not read directory $auxdir.$kloc[$kptf]\n");
+
+print "Your choice?  ";
+$file = <STDIN>;
+chomp ($file);
+
+print SKIN "-1313\n";
+print SKIN $auxdir . $kloc[$kptf],"/",$file,"\n";
+
+} elsif ( $kpick == 2) {
+    print "\nEnter the path to your k-point file:  ";
+$kpath = <STDIN>;
+chomp ($kpath);
+
+# Check for existence, if not, print a warning.
+
+if (!-r $kpath) {print "\nThe file $kpath does not exist yet.
+Remember to create it before you run static.\n"}
+
+print SKIN "-1313\n";
+print SKIN $kpath,"\n";
+
+} elsif ( $kpick == 3) {
+
+# Have the program generate k-points.  One more help section is required.
+
+    while () {
+
+	print "\nShould we use (1) regular or (2) special k-points?  (h=help)  ";
+	$kopt = substr(<STDIN>,0,1);
+	if ( $kopt =~ /^[12]/ ) {last}
+	print "
+------------------------------------------------------------------------
+Regular k-points are evenly spaced on a regular grid in reciprocal
+lattice coordinates starting at the origin.  Special k-points are
+generated by the method of Monkhorst and Pack.  In general there will
+be fewer special k-points then regular k-points for the same grid
+spacing.  However, special k-points may not be accurate if the primitive
+lattice vectors are non-orthogonal and the lattice is not very symmetric.
+See http://cst-www.nrl.navy.mil/bind/kpts/ for more details.
+------------------------------------------------------------------------
+";
+    }
+
+# Make $kopt a Perl index:
+$kopt = $kopt - 1;
+
+@kstring = ("lspec=f,linfok=f","lspec=t,linfok=f");
+
+print SKIN "    0\n",$kstring[$kopt],"\n";
+
+print "\nEnter the number of mesh points along each reciprocal
+lattice vector.  Separate by spaces:  ";
+
+$kmesh = <STDIN>;
+chomp ($kmesh);
+
+# The k-point mesh has to be written in Fortran (3i5) format:
+
+@kpt_out = split(" ",$kmesh);
+
+printf SKIN "%5i%5i%5i\n", $kpt_out[0], $kpt_out[1], $kpt_out[2], "\n";
+
+
+} else {
+
+print "\nYou are not supposed to be able to get here.  Since you
+did, please tell me how by reporting this as a bug to
+mehl\@dave.nrl.navy.mil.  Thanks.\n"
+
+}
+
+# And we are done with the first structure!
+
+# Further structures are limited in this code.  In general, the only
+# thing you will be able to change are the lattice constants and the
+# internal positions of the atoms.  Everything else will remain as
+# it was in the first structure.
+
+while () {
+
+print "\nTo add another structure, continue answering questions as before.
+To exit, hit ^D at the next prompt.\n";
+
+$jstruc++;
+
+unless (read_label ()) {last}
+
+# Uncharged unit cell
+
+print SKIN " 0.00                (No extra electrons in the unit cell)\n";
+
+# Do not change the lattice type
+
+print SKIN $latype,"\n";
+
+# Get new lattice constants:
+
+lat_con ();
+
+# Do not change the strain type, but select new strains, if any:
+
+strain_par ();
+
+# The number of atoms and the neighbor search parameters are unchanged:
+
+print SKIN $atom_number,"               Atoms in the unit cell\n";
+print SKIN $search,"             search limits\n",
+"F                            No additional displacements\n";
+
+# New atom positions are allowed:
+
+atom_pos ();
+
+# Finally, we are not using new k-points:
+
+print SKIN "NEWSYM=F\n";
+
+}
+
+close(SKIN);
+
+print "\nThank you for using skingen\n\n";
+
+
+
+####################### End of main program #######################
+
+
+# *********************************************************************
+# *********************************************************************
+
+#		       Subroutines start here
+
+# *********************************************************************
+# *********************************************************************
+
+sub read_or_default {
+
+# Called with one argument, treated as a string.  If the input line
+# is not an empty string, returns the new string as the value of the
+# argument.  If the new line is the empty string, the original
+# string remains unaffected.
+
+    $t1 = <STDIN>;
+    chomp ($t1);
+
+# Note:  "0" is an acceptable string:
+
+    if ($t1 || ($t1 eq "0")) {$_[0] = $t1}
+}
+
+# *********************************************************************
+
+# read_label does just what it says:
+
+sub read_label {
+
+print "Enter the long label for structure $jstruc.
+The default is '$long_label':  ";
+
+# We can't use the routine read_or_default here because we need to
+# test for EOF.
+
+$eoftest = defined($t1 = <STDIN>);
+
+
+if ($eoftest) {
+
+
+# I suppose that someone, somewhere, might want to use "0" as a string
+
+    chomp($t1);
+    if ($t1 || ($t1 eq "0")) {$long_label = $t1}
+
+    print SKIN $long_label,"\n";
+    
+    print "Enter the short (20 character) label
+(Default '$short_label'):  ";
+
+#    $t1 = <STDIN>;
+#    chomp($t1);
+#    if ($t1 || ($t1 eq "0")) {$short_label = $t1;}
+
+    read_or_default ($short_label);
+
+# Since Perl does not have a native length of string command that I
+# can find, pad $short_label to be longer than 20 characters, then
+# truncate it:
+
+    $short_label = $short_label . "                         ";
+
+    $short_label = substr($short_label,0,20);
+
+# Now remove all blank spaces:
+
+    $short_label =~ s/ *$//;
+
+    print SKIN "$short_label\n";}
+
+return $eoftest;
+
+}
+
+# *********************************************************************
+
+# lat_con is a subroutine which reads the lattice constants for the
+# current lattice.  Note that the return value is not used anywhere.
+
+sub lat_con {
+
+# Get the lattice constants.
+# We need the absolute value of $latype for some things:
+
+$abslat = abs($latype);
+
+# Handle the lattice types more or less separately:
+
+if ($lat_list[$abslat] == 1) {
+# General lattice.  Note that we do not check for three numbers per line.
+
+# We do need to save these lines for possible use in another calculation:
+
+    for ($i = 1;$i < 4; $i++) {
+	print "Enter the Cartesian Coordinates for primitive vector $i
+(Default = '$primvec[$i]'):  ";
+
+#	$primvec[$i] = <STDIN>;
+
+        read_or_default ($primvec[$i]);
+	print SKIN $primvec[$i],"\n";
+    }
+    print "Enter the three scaling factors
+(Default '$primvec[0]'):  ";
+
+#    $primvec[0] = <STDIN>;
+
+    read_or_default ($primvec[0]);
+    print SKIN $primvec[0],"\n";
+} elsif ($lat_list[$abslat] == 2) {
+
+# A single lattice constant is required:
+
+    if( $latype > 0) {print "\nEnter the lattice constant a
+(Default '$latpar'): ";
+#		      $latpar = <STDIN>;
+#		      chomp ($latpar);
+                      read_or_default ($latpar);
+		      print SKIN $latpar,
+		      "           lattice constant a\n";
+		  } else
+    {print "\nEnter the volume V:  ";
+		      $latpar = <STDIN>;
+		      chomp ($latpar);
+		      print SKIN $latpar,
+		      "           Volume constant V\n";
+}
+} elsif ($lat_list[$abslat] == 3) {
+
+# a and c or V and c/a are required.  Note that we will not look at
+# the values, we will just read them and split them up:
+
+    if ( $latype > 0) {
+	print "\nEnter a and c on one line, separated by spaces
+(Default '$latpar'): ";
+#	$latpar = <STDIN>;
+#	chomp ($latpar);
+        read_or_default ($latpar);
+	print SKIN $latpar,"            a,c\n";}
+    else {
+	print "\nEnter V and c/a on one line, separated by spaces
+(Default '$latpar'):  ";
+#	$latpar = <STDIN>;
+#	chomp ($latpar);
+        read_or_default ($latpar);
+	print SKIN $latpar,"            V, c/a\n";}
+
+} elsif ($lat_list[$abslat] == 4) {
+
+# a,b,c or V, b/a, c/a are required:
+    if ( $latype > 0) {
+	print "\nEnter a, b, and c on one line, separated by spaces
+(Default '$latpar'): ";
+#	$latpar = <STDIN>;
+#	chomp ($latpar);
+        read_or_default ($latpar);
+	print SKIN $latpar,"            a,b,c\n";}
+    else {
+	print "\nEnter V, b/a, and  c/a on one line, separated by spaces
+(Default '$latpar'):  ";
+#	$latpar = <STDIN>;
+#	chomp ($latpar);
+        read_or_default ($latpar);
+	print SKIN $latpar,"            V, b/a, c/a\n";}
+} elsif ($lat_list[$abslat] == 5) {
+
+# This is special input for the Rhombohedral lattice:
+    
+    if ( $latype > 0) {
+
+	print "\nEnter 'a' and 'b' for the fcc-like representation
+of the rhombohedral lattice (Default '$latpar'):  ";
+#	$latpar = <STDIN>;
+#	chomp ($latpar);
+        read_or_default ($latpar);
+	print SKIN $latpar,"            Rhombohedral a,b\n";}
+    else {
+	print "\nEnter Volume and rhombohedral angle (in radians)
+(Default '$latpar'):  ";
+#	$latpar = <STDIN>;
+#	chomp ($latpar);
+        read_or_default ($latpar);
+	print SKIN $latpar,"            Rhombohedral V, angle\n";}
+
+}
+}
+
+# *********************************************************************
+
+# strain_par reads the variable $strain_type and decides how many
+#  strain parameters, if any, to ask for
+
+sub strain_par () {
+
+# Do not forget to print out the strain type:
+
+    print SKIN $strain_type,"                   Strain parameter type\n";
+
+    if ($strain_type == 0) {
+
+# Do nothing here
+    } elsif ($strain_type == 1) {
+
+# There are six strain parameters.  Since it can be a rather long
+# haul to type them out on one line, we will get them separately:
+
+	print "\n";
+
+	for ($i = 0; $i < 6; $i++) {
+	    $j = $i+1;
+	    print "Enter parameter e[$j]:  ";
+	    $stpar[$i] = <STDIN>;
+	    chomp($stpar[$i]);
+	}
+
+# Now write the results, which should be on one line:
+
+	printf  SKIN "%19.15f%19.15f%19.15f%19.15f%19.15f%19.15f\n",
+	$stpar[0],$stpar[1],$stpar[2],$stpar[3],$stpar[4],$stpar[5];
+
+    } else {
+
+# The rest of the strain types involve only one parameter.  That is
+# why I defined them this way.
+
+	print "\nEnter the strain parameter:  ";
+	$stparx = <STDIN>;
+	chomp($stparx);
+#
+#       Don't forget the carriage return:
+#
+	print SKIN $stparx,"             Strain Parameter\n";
+
+    }
+}
+
+# *********************************************************************
+
+# atom_pos reads in the position of each atom in the unit cell, in
+# 
+
+sub atom_pos () {
+
+# For each atom position, get the atom type and then its position in
+# lattice or Cartesian coordinates, as determined by $pos_type
+
+    for( $i = 1; $i <= $atom_number ; $i++) {
+
+	if (!$atom_type[$i]) {$atom_type[$i] = 1}
+
+	print "\nEnter the index number of atom $i (Default $atom_type[$i]):  ";
+#
+#       Use the usual Fortran ordering for this array:
+#
+#	$atom_type[$i] = <STDIN>;
+#	chomp($atom_type[$i]);
+	read_or_default ($atom_type[$i]);
+
+#       pos_type == 1 is Cartesian, in which case we multiply
+#       $atom_type by -1:
+
+	if ($pos_type) {$at = - $atom_type[$i]} else {$at = $atom_type[$i]}
+
+#       Now get the position:
+
+	if (!$position[$i]) {$position[$i] = "0.000  0.000  0.000"}
+	print "\nEnter the atomic position in ",$pos_form[$pos_type],
+	" coordinates, separated by spaces (Default:
+	'$position[$i]':  ";
+#	$position[$i] = <STDIN>;
+#	chomp($position[$i]);
+	read_or_default ($position[$i]);
+
+#       Print out the line, not forgetting the thing at the end:
+
+	print SKIN $at,"  ",$position[$i],"  0 0 0\n";
+    }
+}
+
+# *********************************************************************
